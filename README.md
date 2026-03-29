@@ -80,7 +80,7 @@ my-first-website/
 
 ## 👨‍💻 Author
 
-**Your Name**
+Sourjo Ghosh
 
 ---
 
