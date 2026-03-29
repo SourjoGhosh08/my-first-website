@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Attendance System</title>
+
+  <!-- Face API -->
+  <script defer src="https://unpkg.com/face-api.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    header {
+      background: #020617;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #38bdf8;
+      color: #020617;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #334155;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #020617;
+      color: #38bdf8;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #020617;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  Smart Classroom Attendance System (Face Recognition)
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Live Camera</h2>
+    <video id="video" autoplay muted></video>
+    <button onclick="startRecognition()">Start Attendance</button>
+  </div>
+
+  <div class="card">
+    <h2>Attendance Record</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="attendanceBody">
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>
+  Hackathon Project – Face Recognition Monitoring Sensor
+</footer>
+
+<script>
+  const video = document.getElementById('video');
+  const attendanceBody = document.getElementById('attendanceBody');
+
+  // Dummy student database (face labels only)
+  const students = [
+    { roll: 1, name: "Amit" },
+    { roll: 2, name: "Riya" },
+    { roll: 3, name: "Rahul" },
+    { roll: 4, name: "Sneha" }
+  ];
+
+  students.forEach(s => {
+    attendanceBody.innerHTML += `<tr id="row-${s.roll}"><td>${s.roll}</td><td>${s.name}</td><td>Absent</td></tr>`;
+  });
+
+  async function startVideo() {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+  }
+
+  async function loadModels() {
+    const url = 'https://justadudewhohacks.github.io/face-api.js/models';
+    await faceapi.nets.tinyFaceDetector.loadFromUri(url);
+    await faceapi.nets.faceLandmark68Net.loadFromUri(url);
+    await faceapi.nets.faceRecognitionNet.loadFromUri(url);
+  }
+
+  async function startRecognition() {
+    alert("Scanning faces... (Demo Mode)");
+
+    // DEMO: Randomly mark students present
+    students.forEach(s => {
+      if (Math.random() > 0.5) {
+        const row = document.getElementById(`row-${s.roll}`);
+        row.children[2].innerText = 'Present';
+        row.children[2].style.color = '#22c55e';
+      }
+    });
+  }
+
+  loadModels();
+  startVideo();
+</script>
+
+</body>
+</html>
